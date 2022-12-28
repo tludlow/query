@@ -15,34 +15,18 @@ export const defaultContext = React.createContext<QueryClient | undefined>(
 const QueryClientSharingContext = React.createContext<boolean>(false)
 
 // If we are given a context, we will use it.
-// Otherwise, if contextSharing is on, we share the first and at least one
-// instance of the context across the window
-// to ensure that if React Query is used across
-// different bundles or microfrontends they will
-// all use the same **instance** of context, regardless
-// of module scoping.
 function getQueryClientContext(
   context: React.Context<QueryClient | undefined> | undefined,
-  contextSharing: boolean,
 ) {
   if (context) {
     return context
-  }
-  if (contextSharing && typeof window !== 'undefined') {
-    if (!window.ReactQueryClientContext) {
-      window.ReactQueryClientContext = defaultContext
-    }
-
-    return window.ReactQueryClientContext
   }
 
   return defaultContext
 }
 
 export const useQueryClient = ({ context }: ContextOptions = {}) => {
-  const queryClient = React.useContext(
-    getQueryClientContext(context, React.useContext(QueryClientSharingContext)),
-  )
+  const queryClient = React.useContext(getQueryClientContext(context))
 
   if (!queryClient) {
     throw new Error('No QueryClient set, use QueryClientProvider to set one')
@@ -55,23 +39,15 @@ type QueryClientProviderPropsBase = {
   client: QueryClient
   children?: React.ReactNode
 }
-type QueryClientProviderPropsWithContext = ContextOptions & {
-  contextSharing?: never
-} & QueryClientProviderPropsBase
-type QueryClientProviderPropsWithContextSharing = {
-  context?: never
-  contextSharing?: boolean
-} & QueryClientProviderPropsBase
+type QueryClientProviderPropsWithContext = ContextOptions &
+  QueryClientProviderPropsBase
 
-export type QueryClientProviderProps =
-  | QueryClientProviderPropsWithContext
-  | QueryClientProviderPropsWithContextSharing
+export type QueryClientProviderProps = QueryClientProviderPropsWithContext
 
 export const QueryClientProvider = ({
   client,
   children,
   context,
-  contextSharing = false,
 }: QueryClientProviderProps): JSX.Element => {
   React.useEffect(() => {
     client.mount()
@@ -80,18 +56,10 @@ export const QueryClientProvider = ({
     }
   }, [client])
 
-  if (process.env.NODE_ENV !== 'production' && contextSharing) {
-    client
-      .getLogger()
-      .error(
-        `The contextSharing option has been deprecated and will be removed in the next major version`,
-      )
-  }
-
-  const Context = getQueryClientContext(context, contextSharing)
+  const Context = getQueryClientContext(context)
 
   return (
-    <QueryClientSharingContext.Provider value={!context && contextSharing}>
+    <QueryClientSharingContext.Provider value={!context}>
       <Context.Provider value={client}>{children}</Context.Provider>
     </QueryClientSharingContext.Provider>
   )

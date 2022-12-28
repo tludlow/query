@@ -26,3 +26,9 @@ if you still need to remove a query, you can use `queryClient.removeQueries({que
 ### The minimum required TypeScript version is now 4.7
 
 Mainly because an important fix was shipped around type inference. Please see this [TypeScript issue](https://github.com/microsoft/TypeScript/issues/43371) for more information.
+
+### The `contextSharing` prop has been removed from `QueryClientProvider`
+
+Previously, you could use the `contextSharing` property to share the first and at least one instance of the context across the window to ensure that if React Query is used across different bundles or microfrontends they will all use the same instance of context, regardless of module scoping.
+
+If you wish to have a similar behaviour you may use a custom context, as introduced in v4. You can create a `QueryClient` in your app and then use this within the different bundles, as long as they all use the same version of TanStack Query.

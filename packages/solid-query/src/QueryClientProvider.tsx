@@ -51,18 +51,17 @@ export type QueryClientProviderProps = QueryClientProviderPropsWithContext
 export const QueryClientProvider = (
   props: QueryClientProviderProps,
 ): JSX.Element => {
-  const mergedProps = mergeProps(props)
   onMount(() => {
-    mergedProps.client.mount()
+    props.client.mount()
   })
-  onCleanup(() => mergedProps.client.unmount())
+  onCleanup(() => props.client.unmount())
 
-  const QueryClientContext = getQueryClientContext(mergedProps.context)
+  const QueryClientContext = getQueryClientContext(props.context)
 
   return (
-    <QueryClientSharingContext.Provider value={!mergedProps.context}>
-      <QueryClientContext.Provider value={mergedProps.client}>
-        {mergedProps.children}
+    <QueryClientSharingContext.Provider value={!props.context}>
+      <QueryClientContext.Provider value={props.client}>
+        {props.children}
       </QueryClientContext.Provider>
     </QueryClientSharingContext.Provider>
   )

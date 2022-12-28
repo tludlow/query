@@ -41,10 +41,6 @@ function getAppMock(withUnmountHook = false): TestApp {
 }
 
 describe('VueQueryPlugin', () => {
-  beforeEach(() => {
-    window.__VUE_QUERY_CONTEXT__ = undefined
-  })
-
   describe('devtools', () => {
     test('should NOT setup devtools', () => {
       const setupDevtoolsMock = setupDevtools as jest.Mock

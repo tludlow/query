@@ -6,12 +6,6 @@ import { getClientKey } from './utils'
 import { setupDevtools } from './devtools/devtools'
 import type { MaybeRefDeep } from './types'
 
-declare global {
-  interface Window {
-    __VUE_QUERY_CONTEXT__?: QueryClient
-  }
-}
-
 type ClientPersister = (client: QueryClient) => [() => void, Promise<void>]
 
 interface CommonOptions {

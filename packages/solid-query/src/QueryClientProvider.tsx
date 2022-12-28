@@ -1,24 +1,11 @@
 import type { QueryClient } from '@tanstack/query-core'
 import type { Context, JSX } from 'solid-js'
-import {
-  createContext,
-  useContext,
-  onMount,
-  onCleanup,
-  mergeProps,
-} from 'solid-js'
+import { createContext, useContext, onMount, onCleanup } from 'solid-js'
 import type { ContextOptions } from './types'
-
-declare global {
-  interface Window {
-    SolidQueryClientContext?: Context<QueryClient | undefined>
-  }
-}
 
 export const defaultContext = createContext<QueryClient | undefined>(undefined)
 const QueryClientSharingContext = createContext<boolean>(false)
 
-// If we are given a context, we will use it.
 function getQueryClientContext(
   context: Context<QueryClient | undefined> | undefined,
 ) {

@@ -3,18 +3,11 @@ import * as React from 'react'
 import type { QueryClient } from '@tanstack/query-core'
 import type { ContextOptions } from './types'
 
-declare global {
-  interface Window {
-    ReactQueryClientContext?: React.Context<QueryClient | undefined>
-  }
-}
-
 export const defaultContext = React.createContext<QueryClient | undefined>(
   undefined,
 )
 const QueryClientSharingContext = React.createContext<boolean>(false)
 
-// If we are given a context, we will use it.
 function getQueryClientContext(
   context: React.Context<QueryClient | undefined> | undefined,
 ) {
